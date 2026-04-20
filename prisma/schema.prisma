@@ -1,13 +1,353 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../src/lib/generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
+}
+
+// ------------------------------------------------------------
+// Enums
+// ------------------------------------------------------------
+
+enum UserRole {
+  user
+  verified
+  moderator
+  admin
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum VerificationType {
+  api
+  pdf
+  manual
+}
+
+enum ThreadStatus {
+  active
+  closed
+  deleted
+}
+
+enum TargetType {
+  Thread
+  Comment
+  RepositoryFile
+  User
+}
+
+enum ReportStatus {
+  pending
+  reviewing
+  resolved
+  rejected
+}
+
+enum NotificationType {
+  thread_reply
+  comment_quote
+  file_comment
+  verification_approved
+  verification_rejected
+  account_suspended
+  thread_closed
+  new_thread_in_subforum
+}
+
+enum SubscribableType {
+  Thread
+  Subforum
+}
+
+// ------------------------------------------------------------
+// Modelos principales
+// ------------------------------------------------------------
+
+model User {
+  id                  String               @id @default(cuid())
+  username            String               @unique
+  email               String               @unique
+  passwordHash        String
+  fullName            String
+  birthDate           DateTime
+  sex                 String
+  faculty             String?
+  career              String?
+  entryYear           Int?
+  bio                 String?              @default("")
+  avatar              String?
+  role                UserRole             @default(user)
+  emailVerified       Boolean              @default(false)
+  emailVerifiedAt     DateTime?
+  verificationStatus  VerificationStatus?
+  verificationType    VerificationType?
+  verificationData    Json?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  lastActiveAt        DateTime?
+  deletedAt           DateTime?
+
+  // Relaciones
+  threads             Thread[]
+  comments            Comment[]
+  votes               Vote[]
+  reports             Report[]             @relation("Reporter")
+  resolvedReports     Report[]             @relation("ModeratorReports")
+  auditLogs           AuditLog[]           @relation("Actor")
+  savedContents       SavedContent[]
+  notifications       Notification[]
+  subscriptions       Subscription[]
+  files               File[]
+  verificationRequests VerificationRequest[]
+  sessions            Session[]
+}
+
+model VerificationRequest {
+  id           String             @id @default(cuid())
+  userId       String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         VerificationType
+  status       VerificationStatus @default(pending)
+  documentPath String?
+  metadata     Json?
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model Forum {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String?
+  faculty     String?
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  subforums   Subforum[]
+}
+
+model Subforum {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  forumId     String
+  forum       Forum       @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  tags        Json        @default("[]")
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  threads     Thread[]
+  subscriptions Subscription[] @relation("SubforumSubscription")
+}
+
+model Thread {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String
+  content     String
+  status      ThreadStatus @default(active)
+  pinned      Boolean      @default(false)
+  authorId    String
+  author      User         @relation(fields: [authorId], references: [id])
+  subforumId  String
+  subforum    Subforum     @relation(fields: [subforumId], references: [id])
+  viewCount   Int          @default(0)
+  movedFromId String?
+  closedReason String?
+  deletedReason String?
+  deletedById  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  comments    Comment[]
+  votes       Vote[]       @relation("ThreadVotes")
+  reports     Report[]     @relation("ThreadReports")
+  savedBy     SavedContent[] @relation("SavedThreads")
+  subscriptions Subscription[] @relation("ThreadSubscription")
+  attachments Attachment[]
+
+  @@unique([subforumId, slug])
+}
+
+model Comment {
+  id            String    @id @default(cuid())
+  content       String
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id])
+  threadId      String
+  thread        Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  quotedCommentId String?
+  quotedComment   Comment? @relation("CommentQuotes", fields: [quotedCommentId], references: [id])
+  replies        Comment[] @relation("CommentQuotes")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  votes         Vote[]    @relation("CommentVotes")
+  reports       Report[]  @relation("CommentReports")
+  savedBy       SavedContent[] @relation("SavedComments")
+  attachments   Attachment[]
+}
+
+model Vote {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetId   String
+  targetType TargetType
+  value      Int
+  createdAt  DateTime   @default(now())
+
+  // Campos de relación inversa con nombres explícitos
+  thread     Thread?    @relation("ThreadVotes", fields: [targetId], references: [id])
+  comment    Comment?   @relation("CommentVotes", fields: [targetId], references: [id])
+  file       File?      @relation("FileVotes", fields: [targetId], references: [id])
+
+  @@unique([userId, targetId, targetType])
+  @@index([targetId, targetType])
+}
+
+model Report {
+  id           String       @id @default(cuid())
+  reporterId   String
+  reporter     User         @relation("Reporter", fields: [reporterId], references: [id])
+  targetId     String
+  targetType   TargetType
+  reason       String
+  details      String?
+  status       ReportStatus @default(pending)
+  moderatorId  String?
+  moderator    User?        @relation("ModeratorReports", fields: [moderatorId], references: [id])
+  resolution   String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Campos de relación inversa con nombres explícitos
+  thread       Thread?      @relation("ThreadReports", fields: [targetId], references: [id])
+  comment      Comment?     @relation("CommentReports", fields: [targetId], references: [id])
+  file         File?        @relation("FileReports", fields: [targetId], references: [id])
+
+  @@index([status])
+  @@index([targetId, targetType])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actor      User     @relation("Actor", fields: [actorId], references: [id])
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+model SavedContent {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetId   String
+  targetType TargetType
+  savedAt    DateTime   @default(now())
+
+  // Campos de relación inversa con nombres explícitos
+  thread     Thread?    @relation("SavedThreads", fields: [targetId], references: [id])
+  comment    Comment?   @relation("SavedComments", fields: [targetId], references: [id])
+  file       File?      @relation("SavedFiles", fields: [targetId], references: [id])
+
+  @@unique([userId, targetId, targetType])
+  @@index([userId])
+}
+
+model Notification {
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         NotificationType
+  read         Boolean          @default(false)
+  data         Json
+  createdAt    DateTime         @default(now())
+
+  @@index([userId, read])
+}
+
+model Subscription {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscribableId   String
+  subscribableType SubscribableType
+  createdAt        DateTime         @default(now())
+
+  thread           Thread?          @relation("ThreadSubscription", fields: [subscribableId], references: [id])
+  subforum         Subforum?        @relation("SubforumSubscription", fields: [subscribableId], references: [id])
+
+  @@unique([userId, subscribableId, subscribableType])
+}
+
+model File {
+  id              String   @id @default(cuid())
+  uploaderId      String
+  uploader        User     @relation(fields: [uploaderId], references: [id])
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  bucket          String
+  path            String
+  isPublic        Boolean  @default(false)
+  isVerified      Boolean  @default(false)
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  attachments     Attachment[]
+  votes           Vote[]   @relation("FileVotes")
+  reports         Report[] @relation("FileReports")
+  savedBy         SavedContent[] @relation("SavedFiles")
+
+  @@index([uploaderId])
+  @@index([isPublic, isVerified])
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  fileId      String
+  file        File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  threadId    String?
+  thread      Thread?  @relation(fields: [threadId], references: [id])
+  commentId   String?
+  comment     Comment? @relation(fields: [commentId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([fileId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
