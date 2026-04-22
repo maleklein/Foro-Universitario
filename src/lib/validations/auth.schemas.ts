@@ -83,7 +83,15 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const verifyEmailSchema = z.object({
+  token: z
+    .string()
+    .min(1, 'Token requerido')
+    .regex(/^mock-token-.+$/, 'Formato de token inválido'),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RecoverPasswordInput = z.infer<typeof recoverPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;

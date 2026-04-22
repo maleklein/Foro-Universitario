@@ -2,6 +2,7 @@
 import { PrismaClient } from '../src/lib/generated/prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import * as dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -64,6 +65,9 @@ async function main() {
 
   console.log('👥 Creando usuarios...');
 
+  // Contraseña única para todos los usuarios del seed: Password1
+  const passwordHash = await bcrypt.hash('Password1', 10);
+
   const usersData = [
     { username: 'admin', fullName: 'Admin Principal', role: 'admin', verified: true },
     { username: 'moderador1', fullName: 'Moderador Uno', role: 'moderator', verified: true },
@@ -87,7 +91,7 @@ async function main() {
       data: {
         username: u.username,
         email: `${u.username}@uap.edu.ar`,
-        passwordHash: '$2a$10$hashedpasswordmock',
+        passwordHash,
         fullName: u.fullName,
         birthDate: new Date(1995, 0, 1),
         sex: randomItem(['M', 'F']),

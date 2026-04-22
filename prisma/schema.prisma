@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client"
   output   = "../src/lib/generated/prisma"
@@ -72,42 +71,41 @@ enum SubscribableType {
 // ------------------------------------------------------------
 
 model User {
-  id                  String               @id @default(cuid())
-  username            String               @unique
-  email               String               @unique
-  passwordHash        String
-  fullName            String
-  birthDate           DateTime
-  sex                 String
-  faculty             String?
-  career              String?
-  entryYear           Int?
-  bio                 String?              @default("")
-  avatar              String?
-  role                UserRole             @default(user)
-  emailVerified       Boolean              @default(false)
-  emailVerifiedAt     DateTime?
-  verificationStatus  VerificationStatus?
-  verificationType    VerificationType?
-  verificationData    Json?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  lastActiveAt        DateTime?
-  deletedAt           DateTime?
+  id                 String              @id @default(cuid())
+  username           String              @unique
+  email              String              @unique
+  passwordHash       String
+  fullName           String
+  birthDate          DateTime
+  sex                String
+  faculty            String?
+  career             String?
+  entryYear          Int?
+  bio                String?             @default("")
+  avatar             String?
+  role               UserRole            @default(user)
+  emailVerified      Boolean             @default(false)
+  emailVerifiedAt    DateTime?
+  verificationStatus VerificationStatus?
+  verificationType   VerificationType?
+  verificationData   Json?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  lastActiveAt       DateTime?
+  deletedAt          DateTime?
 
-  // Relaciones
-  threads             Thread[]
-  comments            Comment[]
-  votes               Vote[]
-  reports             Report[]             @relation("Reporter")
-  resolvedReports     Report[]             @relation("ModeratorReports")
-  auditLogs           AuditLog[]           @relation("Actor")
-  savedContents       SavedContent[]
-  notifications       Notification[]
-  subscriptions       Subscription[]
-  files               File[]
+  threads              Thread[]
+  comments             Comment[]
+  votes                Vote[]
+  reports              Report[]              @relation("Reporter")
+  resolvedReports      Report[]              @relation("ModeratorReports")
+  auditLogs            AuditLog[]            @relation("Actor")
+  savedContents        SavedContent[]
+  notifications        Notification[]
+  subscriptions        Subscription[]
+  files                File[]
   verificationRequests VerificationRequest[]
-  sessions            Session[]
+  sessions             Session[]
 }
 
 model VerificationRequest {
@@ -125,78 +123,78 @@ model VerificationRequest {
 }
 
 model Forum {
-  id          String      @id @default(cuid())
-  name        String      @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String?
   faculty     String?
-  order       Int         @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  subforums   Subforum[]
+  subforums Subforum[]
 }
 
 model Subforum {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
   forumId     String
-  forum       Forum       @relation(fields: [forumId], references: [id], onDelete: Cascade)
-  tags        Json        @default("[]")
-  order       Int         @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  forum       Forum    @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  tags        Json     @default("[]")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  threads     Thread[]
+  threads       Thread[]
   subscriptions Subscription[] @relation("SubforumSubscription")
 }
 
 model Thread {
-  id          String       @id @default(cuid())
-  title       String
-  slug        String
-  content     String
-  status      ThreadStatus @default(active)
-  pinned      Boolean      @default(false)
-  authorId    String
-  author      User         @relation(fields: [authorId], references: [id])
-  subforumId  String
-  subforum    Subforum     @relation(fields: [subforumId], references: [id])
-  viewCount   Int          @default(0)
-  movedFromId String?
-  closedReason String?
+  id            String       @id @default(cuid())
+  title         String
+  slug          String
+  content       String
+  status        ThreadStatus @default(active)
+  pinned        Boolean      @default(false)
+  authorId      String
+  author        User         @relation(fields: [authorId], references: [id])
+  subforumId    String
+  subforum      Subforum     @relation(fields: [subforumId], references: [id])
+  viewCount     Int          @default(0)
+  movedFromId   String?
+  closedReason  String?
   deletedReason String?
-  deletedById  String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  deletedById   String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  comments    Comment[]
-  votes       Vote[]       @relation("ThreadVotes")
-  reports     Report[]     @relation("ThreadReports")
-  savedBy     SavedContent[] @relation("SavedThreads")
+  comments      Comment[]
+  votes         Vote[]         @relation("ThreadVotes")
+  reports       Report[]       @relation("ThreadReports")
+  savedBy       SavedContent[] @relation("SavedThreads")
   subscriptions Subscription[] @relation("ThreadSubscription")
-  attachments Attachment[]
+  attachments   Attachment[]
 
   @@unique([subforumId, slug])
 }
 
 model Comment {
-  id            String    @id @default(cuid())
-  content       String
-  authorId      String
-  author        User      @relation(fields: [authorId], references: [id])
-  threadId      String
-  thread        Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  id              String    @id @default(cuid())
+  content         String
+  authorId        String
+  author          User      @relation(fields: [authorId], references: [id])
+  threadId        String
+  thread          Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
   quotedCommentId String?
-  quotedComment   Comment? @relation("CommentQuotes", fields: [quotedCommentId], references: [id])
-  replies        Comment[] @relation("CommentQuotes")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  quotedComment   Comment?  @relation("CommentQuotes", fields: [quotedCommentId], references: [id])
+  replies         Comment[] @relation("CommentQuotes")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  votes         Vote[]    @relation("CommentVotes")
-  reports       Report[]  @relation("CommentReports")
-  savedBy       SavedContent[] @relation("SavedComments")
-  attachments   Attachment[]
+  votes       Vote[]         @relation("CommentVotes")
+  reports     Report[]       @relation("CommentReports")
+  savedBy     SavedContent[] @relation("SavedComments")
+  attachments Attachment[]
 }
 
 model Vote {
@@ -208,34 +206,32 @@ model Vote {
   value      Int
   createdAt  DateTime   @default(now())
 
-  // Campos de relación inversa con nombres explícitos
-  thread     Thread?    @relation("ThreadVotes", fields: [targetId], references: [id])
-  comment    Comment?   @relation("CommentVotes", fields: [targetId], references: [id])
-  file       File?      @relation("FileVotes", fields: [targetId], references: [id])
+  thread  Thread?  @relation("ThreadVotes", fields: [targetId], references: [id])
+  comment Comment? @relation("CommentVotes", fields: [targetId], references: [id])
+  file    File?    @relation("FileVotes", fields: [targetId], references: [id])
 
   @@unique([userId, targetId, targetType])
   @@index([targetId, targetType])
 }
 
 model Report {
-  id           String       @id @default(cuid())
-  reporterId   String
-  reporter     User         @relation("Reporter", fields: [reporterId], references: [id])
-  targetId     String
-  targetType   TargetType
-  reason       String
-  details      String?
-  status       ReportStatus @default(pending)
-  moderatorId  String?
-  moderator    User?        @relation("ModeratorReports", fields: [moderatorId], references: [id])
-  resolution   String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id          String       @id @default(cuid())
+  reporterId  String
+  reporter    User         @relation("Reporter", fields: [reporterId], references: [id])
+  targetId    String
+  targetType  TargetType
+  reason      String
+  details     String?
+  status      ReportStatus @default(pending)
+  moderatorId String?
+  moderator   User?        @relation("ModeratorReports", fields: [moderatorId], references: [id])
+  resolution  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-  // Campos de relación inversa con nombres explícitos
-  thread       Thread?      @relation("ThreadReports", fields: [targetId], references: [id])
-  comment      Comment?     @relation("CommentReports", fields: [targetId], references: [id])
-  file         File?        @relation("FileReports", fields: [targetId], references: [id])
+  thread  Thread?  @relation("ThreadReports", fields: [targetId], references: [id])
+  comment Comment? @relation("CommentReports", fields: [targetId], references: [id])
+  file    File?    @relation("FileReports", fields: [targetId], references: [id])
 
   @@index([status])
   @@index([targetId, targetType])
@@ -263,23 +259,22 @@ model SavedContent {
   targetType TargetType
   savedAt    DateTime   @default(now())
 
-  // Campos de relación inversa con nombres explícitos
-  thread     Thread?    @relation("SavedThreads", fields: [targetId], references: [id])
-  comment    Comment?   @relation("SavedComments", fields: [targetId], references: [id])
-  file       File?      @relation("SavedFiles", fields: [targetId], references: [id])
+  thread  Thread?  @relation("SavedThreads", fields: [targetId], references: [id])
+  comment Comment? @relation("SavedComments", fields: [targetId], references: [id])
+  file    File?    @relation("SavedFiles", fields: [targetId], references: [id])
 
   @@unique([userId, targetId, targetType])
   @@index([userId])
 }
 
 model Notification {
-  id           String           @id @default(cuid())
-  userId       String
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type         NotificationType
-  read         Boolean          @default(false)
-  data         Json
-  createdAt    DateTime         @default(now())
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  read      Boolean          @default(false)
+  data      Json
+  createdAt DateTime         @default(now())
 
   @@index([userId, read])
 }
@@ -292,46 +287,46 @@ model Subscription {
   subscribableType SubscribableType
   createdAt        DateTime         @default(now())
 
-  thread           Thread?          @relation("ThreadSubscription", fields: [subscribableId], references: [id])
-  subforum         Subforum?        @relation("SubforumSubscription", fields: [subscribableId], references: [id])
+  thread   Thread?   @relation("ThreadSubscription", fields: [subscribableId], references: [id])
+  subforum Subforum? @relation("SubforumSubscription", fields: [subscribableId], references: [id])
 
   @@unique([userId, subscribableId, subscribableType])
 }
 
 model File {
-  id              String   @id @default(cuid())
-  uploaderId      String
-  uploader        User     @relation(fields: [uploaderId], references: [id])
-  filename        String
-  originalName    String
-  mimeType        String
-  size            Int
-  bucket          String
-  path            String
-  isPublic        Boolean  @default(false)
-  isVerified      Boolean  @default(false)
-  metadata        Json?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id           String   @id @default(cuid())
+  uploaderId   String
+  uploader     User     @relation(fields: [uploaderId], references: [id])
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  bucket       String
+  path         String
+  isPublic     Boolean  @default(false)
+  isVerified   Boolean  @default(false)
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  attachments     Attachment[]
-  votes           Vote[]   @relation("FileVotes")
-  reports         Report[] @relation("FileReports")
-  savedBy         SavedContent[] @relation("SavedFiles")
+  attachments Attachment[]
+  votes       Vote[]         @relation("FileVotes")
+  reports     Report[]       @relation("FileReports")
+  savedBy     SavedContent[] @relation("SavedFiles")
 
   @@index([uploaderId])
   @@index([isPublic, isVerified])
 }
 
 model Attachment {
-  id          String   @id @default(cuid())
-  fileId      String
-  file        File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  threadId    String?
-  thread      Thread?  @relation(fields: [threadId], references: [id])
-  commentId   String?
-  comment     Comment? @relation(fields: [commentId], references: [id])
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  fileId    String
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  threadId  String?
+  thread    Thread?  @relation(fields: [threadId], references: [id])
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  createdAt DateTime @default(now())
 
   @@index([fileId])
 }
