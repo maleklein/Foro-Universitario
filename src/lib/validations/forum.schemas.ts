@@ -27,6 +27,10 @@ export const updateThreadSchema = z.object({
     .max(150)
     .optional(),
   content: z.string().min(10).max(50000).optional(),
+  tags: z
+    .array(z.string().max(30, 'Cada tag no puede exceder 30 caracteres'))
+    .max(5, 'Máximo 5 tags por hilo')
+    .optional(),
 });
 
 export const createCommentSchema = z.object({
@@ -66,6 +70,16 @@ export const deleteThreadSchema = z.object({
   reason: z.string().min(5, 'Debe especificar el motivo de eliminación').max(200),
 });
 
+export const createForumSchema = z.object({
+  name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(100),
+  description: z.string().max(500, 'La descripción no puede exceder 500 caracteres').optional(),
+  faculty: z.string().max(50).optional(),
+});
+
+export const updateForumSchema = createForumSchema.partial();
+
+export type CreateForumInput = z.infer<typeof createForumSchema>;
+export type UpdateForumInput = z.infer<typeof updateForumSchema>;
 export type CreateThreadInput = z.infer<typeof createThreadSchema>;
 export type UpdateThreadInput = z.infer<typeof updateThreadSchema>;
 export type CreateCommentInput = z.infer<typeof createCommentSchema>;
