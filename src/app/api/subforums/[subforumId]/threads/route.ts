@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         createdAt: true,
         updatedAt: true,
         author: {
-          select: { id: true, username: true, avatar: true },
+          select: { id: true, username: true, avatar: true, role: true, emailVerified: true },
         },
         _count: {
           select: { comments: true },
@@ -43,7 +43,10 @@ export async function GET(req: NextRequest, { params }: Params) {
           select: { value: true },
         },
         comments: {
-          select: { createdAt: true },
+          select: {
+            createdAt: true,
+            author: { select: { id: true, username: true } },
+          },
           orderBy: { createdAt: 'desc' },
           take: 1,
         },
@@ -76,6 +79,9 @@ export async function GET(req: NextRequest, { params }: Params) {
       voteCount: votes.reduce((sum, v) => sum + v.value, 0),
       commentCount: _count.comments,
       lastActivityAt: (comments[0]?.createdAt ?? thread.createdAt).toISOString(),
+      lastComment: comments[0]
+        ? { author: comments[0].author, createdAt: comments[0].createdAt.toISOString() }
+        : null,
     }));
 
     return NextResponse.json(
