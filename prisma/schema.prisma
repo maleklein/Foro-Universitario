@@ -154,6 +154,7 @@ model Thread {
   title         String
   slug          String
   content       String
+  tags          Json         @default("[]")
   status        ThreadStatus @default(active)
   pinned        Boolean      @default(false)
   authorId      String

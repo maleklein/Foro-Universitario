@@ -10,14 +10,14 @@ import { z } from 'zod';
 // ─────────────────────────────────────────────
 export const registerSchema = z.object({
 
-  // username tiene que ser string, mínimo 3 caracteres, máximo 30,
+  // username tiene que ser string, mínimo 3 caracteres, máximo 20,
   // y solo puede tener letras, números y guiones bajos.
   // El segundo argumento de cada método es el mensaje de error
   // que Zod devuelve si no se cumple esa regla.
   username: z
     .string()
     .min(3, 'El nombre de usuario debe tener al menos 3 caracteres')
-    .max(30, 'El nombre de usuario no puede exceder 30 caracteres')
+    .max(20, 'El nombre de usuario no puede exceder 20 caracteres')
     .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guiones bajos'),
 
   email: z

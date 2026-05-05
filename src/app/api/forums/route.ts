@@ -80,64 +80,72 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    // 1. Consultar todos los foros con sus subforos y métricas
+    // 1. Consultar todos los foros con sus subforos y métricas por subforo
     const forums = await prisma.forum.findMany({
       select: {
         id: true,
         name: true,
         description: true,
         faculty: true,
-        _count: {
-          select: { subforums: true },
-        },
         subforums: {
           select: {
+            id: true,
+            name: true,
+            description: true,
+            _count: { select: { threads: true } },
             threads: {
               select: {
                 createdAt: true,
+                _count: { select: { comments: true } },
                 comments: {
                   select: { createdAt: true },
+                  orderBy: { createdAt: 'desc' },
+                  take: 1,
                 },
               },
             },
           },
+          orderBy: { order: 'asc' },
         },
       },
       orderBy: { order: 'asc' },
     });
 
-    // 2. Calcular métricas y mapear cada foro
-    const mapped = forums.map((forum) => {
-      let totalThreads = 0;
-      let lastMovement: Date | null = null;
-
-      for (const subforum of forum.subforums) {
-        totalThreads += subforum.threads.length;
+    // 2. Calcular métricas por subforo y mapear cada foro
+    const mapped = forums.map((forum) => ({
+      id: forum.id,
+      name: forum.name,
+      description: forum.description,
+      faculty: forum.faculty,
+      subforums: forum.subforums.map((subforum) => {
+        const threadCount = subforum._count.threads;
+        let totalMessages = threadCount;
+        let lastMovement: Date | null = null;
 
         for (const thread of subforum.threads) {
+          totalMessages += thread._count.comments;
+
           if (!lastMovement || thread.createdAt > lastMovement) {
             lastMovement = thread.createdAt;
           }
-          for (const comment of thread.comments) {
-            if (!lastMovement || comment.createdAt > lastMovement) {
-              lastMovement = comment.createdAt;
-            }
+          const latestComment = thread.comments[0];
+          if (latestComment && (!lastMovement || latestComment.createdAt > lastMovement)) {
+            lastMovement = latestComment.createdAt;
           }
         }
-      }
 
-      return {
-        id: forum.id,
-        name: forum.name,
-        description: forum.description,
-        faculty: forum.faculty,
-        subforumCount: forum._count.subforums,
-        totalThreads,
-        lastMovement,
-      };
-    });
+        return {
+          id: subforum.id,
+          name: subforum.name,
+          description: subforum.description,
+          threadCount,
+          totalMessages,
+          lastMovement,
+        };
+      }),
+    }));
 
-    // 3. Agrupar por facultad
+    // 3. Agrupar por facultad (null → 'General')
     const groupedMap = new Map<string, typeof mapped>();
 
     for (const forum of mapped) {
@@ -151,7 +159,7 @@ export async function GET() {
       forums,
     }));
 
-    // 4. Retornar 200 con estructura [{ faculty, forums: [...] }]
+    // 4. Retornar 200 con estructura [{ faculty, forums: [{ ..., subforums: [...] }] }]
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error('Error al obtener foros:', error);

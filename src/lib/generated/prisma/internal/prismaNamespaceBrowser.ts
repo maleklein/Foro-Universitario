@@ -158,6 +158,7 @@ export const ThreadScalarFieldEnum = {
   title: 'title',
   slug: 'slug',
   content: 'content',
+  tags: 'tags',
   status: 'status',
   pinned: 'pinned',
   authorId: 'authorId',
