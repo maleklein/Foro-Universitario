@@ -75,6 +75,7 @@ export type ThreadCountAggregateOutputType = {
   title: number
   slug: number
   content: number
+  tags: number
   status: number
   pinned: number
   authorId: number
@@ -139,6 +140,7 @@ export type ThreadCountAggregateInputType = {
   title?: true
   slug?: true
   content?: true
+  tags?: true
   status?: true
   pinned?: true
   authorId?: true
@@ -244,6 +246,7 @@ export type ThreadGroupByOutputType = {
   title: string
   slug: string
   content: string
+  tags: runtime.JsonValue
   status: $Enums.ThreadStatus
   pinned: boolean
   authorId: string
@@ -285,6 +288,7 @@ export type ThreadWhereInput = {
   title?: Prisma.StringFilter<"Thread"> | string
   slug?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  tags?: Prisma.JsonFilter<"Thread">
   status?: Prisma.EnumThreadStatusFilter<"Thread"> | $Enums.ThreadStatus
   pinned?: Prisma.BoolFilter<"Thread"> | boolean
   authorId?: Prisma.StringFilter<"Thread"> | string
@@ -311,6 +315,7 @@ export type ThreadOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -341,6 +346,7 @@ export type ThreadWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Thread"> | string
   slug?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  tags?: Prisma.JsonFilter<"Thread">
   status?: Prisma.EnumThreadStatusFilter<"Thread"> | $Enums.ThreadStatus
   pinned?: Prisma.BoolFilter<"Thread"> | boolean
   authorId?: Prisma.StringFilter<"Thread"> | string
@@ -367,6 +373,7 @@ export type ThreadOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -393,6 +400,7 @@ export type ThreadScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Thread"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Thread"> | string
   content?: Prisma.StringWithAggregatesFilter<"Thread"> | string
+  tags?: Prisma.JsonWithAggregatesFilter<"Thread">
   status?: Prisma.EnumThreadStatusWithAggregatesFilter<"Thread"> | $Enums.ThreadStatus
   pinned?: Prisma.BoolWithAggregatesFilter<"Thread"> | boolean
   authorId?: Prisma.StringWithAggregatesFilter<"Thread"> | string
@@ -411,6 +419,7 @@ export type ThreadCreateInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -435,6 +444,7 @@ export type ThreadUncheckedCreateInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -459,6 +469,7 @@ export type ThreadUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -483,6 +494,7 @@ export type ThreadUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -507,6 +519,7 @@ export type ThreadCreateManyInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -525,6 +538,7 @@ export type ThreadUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -541,6 +555,7 @@ export type ThreadUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -574,6 +589,7 @@ export type ThreadCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -828,6 +844,7 @@ export type ThreadCreateWithoutAuthorInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -851,6 +868,7 @@ export type ThreadUncheckedCreateWithoutAuthorInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   subforumId: string
@@ -902,6 +920,7 @@ export type ThreadScalarWhereInput = {
   title?: Prisma.StringFilter<"Thread"> | string
   slug?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  tags?: Prisma.JsonFilter<"Thread">
   status?: Prisma.EnumThreadStatusFilter<"Thread"> | $Enums.ThreadStatus
   pinned?: Prisma.BoolFilter<"Thread"> | boolean
   authorId?: Prisma.StringFilter<"Thread"> | string
@@ -920,6 +939,7 @@ export type ThreadCreateWithoutSubforumInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -943,6 +963,7 @@ export type ThreadUncheckedCreateWithoutSubforumInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -991,6 +1012,7 @@ export type ThreadCreateWithoutCommentsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1014,6 +1036,7 @@ export type ThreadUncheckedCreateWithoutCommentsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1053,6 +1076,7 @@ export type ThreadUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1076,6 +1100,7 @@ export type ThreadUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1099,6 +1124,7 @@ export type ThreadCreateWithoutVotesInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1122,6 +1148,7 @@ export type ThreadUncheckedCreateWithoutVotesInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1161,6 +1188,7 @@ export type ThreadUpdateWithoutVotesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1184,6 +1212,7 @@ export type ThreadUncheckedUpdateWithoutVotesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1207,6 +1236,7 @@ export type ThreadCreateWithoutReportsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1230,6 +1260,7 @@ export type ThreadUncheckedCreateWithoutReportsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1269,6 +1300,7 @@ export type ThreadUpdateWithoutReportsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1292,6 +1324,7 @@ export type ThreadUncheckedUpdateWithoutReportsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1315,6 +1348,7 @@ export type ThreadCreateWithoutSavedByInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1338,6 +1372,7 @@ export type ThreadUncheckedCreateWithoutSavedByInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1377,6 +1412,7 @@ export type ThreadUpdateWithoutSavedByInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1400,6 +1436,7 @@ export type ThreadUncheckedUpdateWithoutSavedByInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1423,6 +1460,7 @@ export type ThreadCreateWithoutSubscriptionsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1446,6 +1484,7 @@ export type ThreadUncheckedCreateWithoutSubscriptionsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1485,6 +1524,7 @@ export type ThreadUpdateWithoutSubscriptionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1508,6 +1548,7 @@ export type ThreadUncheckedUpdateWithoutSubscriptionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1531,6 +1572,7 @@ export type ThreadCreateWithoutAttachmentsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   viewCount?: number
@@ -1554,6 +1596,7 @@ export type ThreadUncheckedCreateWithoutAttachmentsInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1593,6 +1636,7 @@ export type ThreadUpdateWithoutAttachmentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1616,6 +1660,7 @@ export type ThreadUncheckedUpdateWithoutAttachmentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1639,6 +1684,7 @@ export type ThreadCreateManyAuthorInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   subforumId: string
@@ -1656,6 +1702,7 @@ export type ThreadUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1679,6 +1726,7 @@ export type ThreadUncheckedUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   subforumId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1702,6 +1750,7 @@ export type ThreadUncheckedUpdateManyWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   subforumId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1719,6 +1768,7 @@ export type ThreadCreateManySubforumInput = {
   title: string
   slug: string
   content: string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ThreadStatus
   pinned?: boolean
   authorId: string
@@ -1736,6 +1786,7 @@ export type ThreadUpdateWithoutSubforumInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1759,6 +1810,7 @@ export type ThreadUncheckedUpdateWithoutSubforumInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1782,6 +1834,7 @@ export type ThreadUncheckedUpdateManyWithoutSubforumInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumThreadStatusFieldUpdateOperationsInput | $Enums.ThreadStatus
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1875,6 +1928,7 @@ export type ThreadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   title?: boolean
   slug?: boolean
   content?: boolean
+  tags?: boolean
   status?: boolean
   pinned?: boolean
   authorId?: boolean
@@ -1902,6 +1956,7 @@ export type ThreadSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   slug?: boolean
   content?: boolean
+  tags?: boolean
   status?: boolean
   pinned?: boolean
   authorId?: boolean
@@ -1922,6 +1977,7 @@ export type ThreadSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   slug?: boolean
   content?: boolean
+  tags?: boolean
   status?: boolean
   pinned?: boolean
   authorId?: boolean
@@ -1942,6 +1998,7 @@ export type ThreadSelectScalar = {
   title?: boolean
   slug?: boolean
   content?: boolean
+  tags?: boolean
   status?: boolean
   pinned?: boolean
   authorId?: boolean
@@ -1955,7 +2012,7 @@ export type ThreadSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "status" | "pinned" | "authorId" | "subforumId" | "viewCount" | "movedFromId" | "closedReason" | "deletedReason" | "deletedById" | "createdAt" | "updatedAt", ExtArgs["result"]["thread"]>
+export type ThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "tags" | "status" | "pinned" | "authorId" | "subforumId" | "viewCount" | "movedFromId" | "closedReason" | "deletedReason" | "deletedById" | "createdAt" | "updatedAt", ExtArgs["result"]["thread"]>
 export type ThreadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   subforum?: boolean | Prisma.SubforumDefaultArgs<ExtArgs>
@@ -1993,6 +2050,7 @@ export type $ThreadPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     title: string
     slug: string
     content: string
+    tags: runtime.JsonValue
     status: $Enums.ThreadStatus
     pinned: boolean
     authorId: string
@@ -2439,6 +2497,7 @@ export interface ThreadFieldRefs {
   readonly title: Prisma.FieldRef<"Thread", 'String'>
   readonly slug: Prisma.FieldRef<"Thread", 'String'>
   readonly content: Prisma.FieldRef<"Thread", 'String'>
+  readonly tags: Prisma.FieldRef<"Thread", 'Json'>
   readonly status: Prisma.FieldRef<"Thread", 'ThreadStatus'>
   readonly pinned: Prisma.FieldRef<"Thread", 'Boolean'>
   readonly authorId: Prisma.FieldRef<"Thread", 'String'>

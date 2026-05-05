@@ -162,6 +162,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
         slug: true,
         status: true,
         pinned: true,
+        tags: true,
         viewCount: true,
         createdAt: true,
         updatedAt: true,
@@ -220,6 +221,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
       },
       { status: 200 }
     );
+
   } catch (error) {
     console.error('Error al obtener hilo:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
