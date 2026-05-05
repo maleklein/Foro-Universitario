@@ -4,25 +4,28 @@ import bcrypt from 'bcrypt';
 import { loginSchema } from '@/lib/validations';
 import { prisma } from '@/lib/db/prisma';
 
-export async function POST(req: NextRequest) {
+//Este endpoint maneja el inicio de sesion. 
+//Recibe un email y contraseña, los valida, los verifica contra la base de datos, y si todo está bien devuelve los datos del usuario y un token de sesión.
+
+export async function POST(req: NextRequest) { //hacemos una ruta post del login
   try {
     // 1. Validar body con Zod
-    const body = await req.json();
-    const validation = loginSchema.safeParse(body);
+    const body = await req.json(); //obtenemos los datos del body en json y los convertimos en un objeto js
+    const validation = loginSchema.safeParse(body); //verificamos el cuerpo con Zod
 
     if (!validation.success) {
       return NextResponse.json(
         {
           error: 'Datos inválidos',
-          details: validation.error.flatten().fieldErrors,
+          details: validation.error.flatten().fieldErrors, //si los datos son invalidos (segun Zod) lanza error
         },
         { status: 400 }
       );
     }
 
-    const { email, password } = validation.data;
+    const { email, password } = validation.data; //obtenemos el email y contrasena del usuario 
 
-    // 2. Buscar usuario por email
+    // 2. Buscar usuario por email en la base de datos
     const user = await prisma.user.findUnique({
       where: { email },
     });

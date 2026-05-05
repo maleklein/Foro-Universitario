@@ -151,7 +151,8 @@ export async function POST(req: NextRequest) {
         username: true,
         email: true,
         fullName: true,
-        birthDate: true,
+        birthDate: true, //Es para controlar qué campos de la base de datos se devuelven en la respuesta.
+                          //Sin el select, Prisma devolvería todos los campos del usuario, incluyendo passwordHash. Con el select en true solo los campos listados, y passwordHash no está — así nunca se expone al cliente.
         sex: true,
         faculty: true,
         career: true,

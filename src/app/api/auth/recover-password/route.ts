@@ -5,10 +5,10 @@ import { prisma } from '@/lib/db/prisma';
 
 const NEUTRAL_MESSAGE = 'Si el email existe en nuestra base, te enviamos un enlace de recuperación';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) { //Cuando el usuario hace clic en "Recuperar contraseña" en el frontend, se envía una request POST a /api/auth/recover-password, y esta función es la que la recibe y procesa.
   try {
     // 1. Validar body con Zod
-    const body = await req.json();
+    const body = await req.json(); 
     const validation = recoverPasswordSchema.safeParse(body);
 
     if (!validation.success) {
