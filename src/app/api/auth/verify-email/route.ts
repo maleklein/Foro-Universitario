@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyEmailSchema } from '@/lib/validations';
 import { prisma } from '@/lib/db/prisma';
 
+//Lo que pasa es: cuando el usuario recibe el email de verificación, ese email contiene un link con un token incluido en la URL, algo como ...?token=abc123. Cuando hace clic, el frontend lee ese token de la URL y automáticamente hace el POST a este endpoint enviando el token en el body.
 export async function POST(req: NextRequest) {
   try {
     // 1. Validar body con Zod
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: 'Token inválido',
+          error: 'Token inválido', //porque puede no existir, haber expirado o ya haber sido usado.
           details: validation.error.flatten().fieldErrors,
         },
         { status: 400 }
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
     const { token } = validation.data;
 
     // 2. Parsear userId del token (formato: mock-token-{userId})
-    const userId = token.replace('mock-token-', '');
+    const userId = token.replace('mock-token-', ''); //obtiene el id del token del usuario y lo almacena en una variable
 
     // 3. Buscar usuario en DB
     const user = await prisma.user.findUnique({

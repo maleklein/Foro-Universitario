@@ -39,10 +39,13 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Hashear contraseña
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const saltRounds = 10; //proceso mas lento para que sea mas dificil adivinar contrasenas
+    const passwordHash = await bcrypt.hash(password, saltRounds); //bcrypt.hash convierte la contraseña en texto plano a un hash — un string irreconocible como $2b$10$xyz... — que es lo que se guarda en la base de datos. Así si alguien accede a la BD nunca ve la contraseña real.
 
     // 4. Mock de CAPTCHA y envío de email
+    //Son simulaciones ([MOCK]) de dos cosas que en producción real harías pero que acá se saltean:
+    //CAPTCHA — verificar que quien se registra es humano y no un bot
+    //Email de verificación — enviar un correo al usuario con un link para confirmar su cuenta
     console.log(`[MOCK] CAPTCHA validado para ${email}`);
     console.log(`[MOCK] Email de verificación enviado a ${email}`);
 
@@ -66,7 +69,8 @@ export async function POST(req: NextRequest) {
         username: true,
         email: true,
         fullName: true,
-        birthDate: true,
+        birthDate: true, //Es para controlar qué campos de la base de datos se devuelven en la respuesta.
+                          //Sin el select, Prisma devolvería todos los campos del usuario, incluyendo passwordHash. Con el select en true solo los campos listados, y passwordHash no está — así nunca se expone al cliente.
         sex: true,
         faculty: true,
         career: true,
